@@ -1,8 +1,9 @@
 # MATA49_T2_24.1
 
+
 Os arquivos devem ser nomeados como:
 ### questaox.asm 
-x-número da questões
+  * x-número da questão
 
 
-Na parte superior deve conter o nome dos membros em forma de comentários.
+OBS: Inserir os nomes dos membros da equipe em forma de comentários na parte superior do arquivo .asm. 
