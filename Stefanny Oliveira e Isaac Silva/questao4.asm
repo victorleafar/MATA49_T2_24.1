@@ -1,6 +1,8 @@
 ;Stefanny Oliveira
 ;Isaac Silva
 
+;https://replit.com/@stefannyoliveira/Trabalho-Final#q4.asm
+
 section .data
     formato_entrada: db "%d", 0
     formato_saida:   db "%d ", 0  
