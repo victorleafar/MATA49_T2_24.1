@@ -1,9 +1,9 @@
-# MATA49_T2_24.1
+# Trabalho Final de Programação de Software Básico (MATA49)
 
+- Alunos: Guilherme Vitória e João Phillipe
+- Professora: Mirlei Moura da Silva
 
-Os arquivos devem ser nomeados como:
-### questaox.asm 
-  * x-número da questão
+## Questões
 
-
-OBS: Inserir os nomes dos membros da equipe em forma de comentários na parte superior do arquivo .asm. 
+- Escolhida: 2
+- Sorteada: 14
