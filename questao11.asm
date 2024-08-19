@@ -11,6 +11,7 @@ section .data
     msg_eq:           db "Equilatéro", 10, 0
     msg_is:           db "Isosceles", 10, 0
     msg_es:           db "Escaleno", 10, 0
+    msg_not_triangle: db "Os lados fornecidos não formam um triângulo", 10, 0
     l1Message:        db "Informe o lado 1 do triângulo: ", 0
     l2Message:        db "Informe o lado 2 do triângulo: ", 0
     l3Message:        db "Informe o lado 3 do triângulo: ", 0
@@ -52,7 +53,25 @@ section .text
     mov       rdi, format
     mov       rsi, l3
     call      scanf
-    
+
+    mov       eax, [l1]
+    mov       ebx, [l2]
+    mov       ecx, [l3]
+
+    add eax, ebx
+    cmp eax, ecx
+    jle not_triangle
+
+    mov eax, [l1]
+    add eax, ecx
+    cmp eax, ebx
+    jle not_triangle
+
+    mov eax, [l2]
+    add eax, ecx
+    cmp eax, [l1]
+    jle not_triangle
+
     mov       eax, [l1]
     mov       ebx, [l2]
     mov       ecx, [l3]
@@ -61,14 +80,13 @@ section .text
     je        check_isosceles
     jne       check_escaleno
 
-    
     check_escaleno:
       cmp     eax, ecx
       je      print_isosceles
       cmp     ebx, ecx
       je      print_isosceles
       jmp     print_escaleno
-      
+
     check_isosceles:
       cmp     eax, ecx
       je      print_equilatero
@@ -77,21 +95,27 @@ section .text
     print_equilatero:
       mov     rdi, msg_eq
       call    printf
-      
+
       jmp     exit
-    
+
     print_isosceles:
       mov     rdi, msg_is
       call    printf
-      
+
       jmp     exit
-      
+
     print_escaleno:
       mov     rdi, msg_es
       call    printf
-      
+
       jmp     exit
 
+    not_triangle:
+      mov     rdi, msg_not_triangle
+      call    printf
+
+      jmp     exit
+      
     exit:
       pop     rbp
       mov     rax, 0
