@@ -1,6 +1,6 @@
-# Atividade Final - Programação de Software Básico
-## Turma 2 - Equipe 16
-![Imagem do tema Assembly.]()
+# Atividade Final - Turma 02 - Equipe 16
+![Imagem do tema Assembly.](https://github.com/user-attachments/assets/c582a6fa-1766-4396-a46b-344534d285a6)
+
 
 ### Tópicos
 
@@ -22,9 +22,9 @@ Exercício realizado com o intuito de consolidar os conhecimentos adquiridos ao 
 Os códigos desenvolvidos resolvem duas das dezesseis questões propostas na ***Atividade Final*** da disciplina ***Programação de Software Básico***.
 
 ### Questões Resolvidas:
-- 1) Escreva um programa em _Assembly_ que calcule a área do círculo, o programa deve permitir ao usuário escolher se a entrada é o raio ou o diâmetro. ***OBS***: Utilizar ponto flutuante.
+- 1. Escreva um programa em _Assembly_ que calcule a área do círculo, o programa deve permitir ao usuário escolher se a entrada é o raio ou o diâmetro. ***OBS***: Utilizar ponto flutuante.
 
-- 16) Escreva um programa em _Assembly_ que receba um número inteiro **N** e verifique se é um número de _Armstrong_ (um número é um número de _Armstrong_ se a soma dos seus dígitos elevados ao número de dígitos é igual ao próprio número). Imprima uma mensagem indicando se **N** é um número de _Armstrong_ ou não.
+- 16. Escreva um programa em _Assembly_ que receba um número inteiro **N** e verifique se é um número de _Armstrong_ (um número é um número de _Armstrong_ se a soma dos seus dígitos elevados ao número de dígitos é igual ao próprio número). Imprima uma mensagem indicando se **N** é um número de _Armstrong_ ou não.
 
 ### Acesso
 Você pode acessar diretamente os códigos desenvolvidos através da plataforma ***Replit*** clicando [aqui](https://replit.com/@zebaufba/FilipeFreitasandJoaoZeba-AtividadeFinal).
