@@ -1,0 +1,164 @@
+global  main
+extern printf, scanf 
+
+section   .data
+format_in db "%s",0
+fmt_res db "%s",10,0
+expPosfixa dq 0,0,0,0 ; reservando 32 bytes
+pilha db 255 dup(0) ; pilha com 255 bytes, onde cada um inicializa com 0
+topo dq 0 
+
+section .bss
+exp resb 255
+
+section .text
+    
+main:
+    push rbp
+    mov rbp, rsp
+
+    ;recebe a expressão matemática infixa
+    mov rdi, format_in
+    mov rsi, exp
+    call scanf
+   
+    xor rcx, rcx ; inicializa contador da exp infixa
+    xor rdi, rdi ; incializa contador da exp pos fixa
+    
+    percorre_exp: 
+        ; percorre a expressão infixa
+        mov al, byte[exp + rcx]
+        cmp al, 0
+        je desempilha_tudo ;se chegar ao final da exp, esvazia a pilha
+
+        ;caso contrário, verifica o operando
+            ;asc --> operandos0a9(d48a57),operadores()*+d40a43,-d45,/d47
+            ;asc --> letras a-z(d97a122)
+            
+        cmp al, '0'
+        jl  checa_operador  ; se menor que '0', verificar operador
+        cmp al, '9'
+        jle add_Posfixa   ; se for número, adicionar à Pós fixa
+        cmp al, 'a'
+        jl  checa_operador ; se menor que 'a', verificar operador
+        cmp al, 'z'
+        jle add_Posfixa   ; se for letra, adicionar à Pós fixa
+    
+;----------------------------------------------   
+    checa_operador:
+       ;checa a prioridade dos operadores + - * /
+        mov rdx, 0
+        mov dl, al; operador atual
+
+        cmp byte[topo], 0 ; verifica se a pilha está vazia
+        je empilha        ; empilha operador atual na pilha vazia
+
+        mov rbx, [topo]
+        dec rbx
+        mov al, byte[pilha +rbx] ; operador que está no topo  da pilha
+
+        call verifica_prioridade ;verifica prioridade dos operadores
+
+                                                      
+        jmp empilha ; empilha operador atual
+
+
+    verifica_prioridade:
+        cmp dl, '*'             ;verifica se o operador atual é * 
+        je prioridade_maior     ;Se for, tem prioridade maior
+        cmp dl, '/'
+        je prioridade_maior         
+        cmp dl, '+'             ; verifica se o operador atual é +
+        je prioridade_menorigual ; se for, tem prioridade menor ou igual
+        cmp dl, '-'
+        je prioridade_menorigual
+        ret
+
+    prioridade_maior: ; verifica se o operador da pilha é * ou +
+        cmp al, '*' 
+        je desempilha ; se for, desempilha
+        cmp al, '/'
+        je desempilha
+        ret
+        
+        
+    prioridade_menorigual: ;verifica se o operador da pilha tem                                      prioridade e desempilha
+        cmp al, '*'     
+        je desempilha
+        cmp al, '/'
+        je desempilha
+        cmp al, '-'
+        je desempilha
+        cmp al, '+'
+        je desempilha
+        ret
+        
+    verifica_anttopo:   ;verifica prioridade do operador anterior ao topo
+        mov [topo], rbx
+        dec rbx
+        mov al, byte[pilha +rbx] ; verifica o operador anterior 
+        call verifica_prioridade ; verifica a prioridade
+        ret
+   
+;----------------------------------------------   
+    add_Posfixa:
+            ;add operando na pós fixa
+        mov byte[expPosfixa+ rdi], al 
+        inc rdi
+        jmp prox_caracter
+;----------------------------------------------   
+    prox_caracter: ;vai para o próximo caracter
+        inc rcx
+        jmp percorre_exp
+        
+;----------------------------------------------     
+    empilha:
+        ; Empilha o operador atual
+        mov rbx, [topo]
+        mov byte [pilha + rbx], dl
+        inc rbx
+        mov [topo], rbx
+        jmp prox_caracter ; vai para o próximo caracter
+
+    desempilha:  
+                ;desempilha operador da pilha e coloca na exposfixa
+        mov rbx, [topo]
+        dec rbx
+        mov al, byte [pilha + rbx]
+        mov byte [expPosfixa + rdi], al
+        inc rdi
+        mov [topo], rbx
+        cmp byte [topo],0 ; verifica se a pilha ta vazia
+        jne verifica_anttopo  ;verifica se o operador anterior ao topo tem prioridade
+        ret
+        
+    desempilha_tudo:
+        ; Esvaziar a pilha para a pós fixa
+        mov rbx, [topo]
+        esvazia_pilha:
+            dec rbx
+            mov al, byte [pilha + rbx]
+            cmp al, 0 
+            je posFixa
+            mov byte [expPosfixa + rdi], al
+            inc rdi
+            jmp esvazia_pilha
+            
+;----------------------------------------------   
+    posFixa: ; imprime pos fixa
+
+        mov rdi, fmt_res
+        mov rsi, expPosfixa
+        mov rax, 0
+        call printf
+
+        jmp fim
+        
+;----------------------------------------------   
+    fim:
+        pop rbp
+        mov rax, 0
+        ret
+
+    
+       
