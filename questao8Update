@@ -1,0 +1,156 @@
+section .data
+    prompt_n db "Digite o tamanho do vetor: ", 0
+    prompt_num db "Digite um numero: ", 0
+    msg_sorted_asc db "Vetor ordenado em ordem crescente: ", 0
+    msg_sorted_desc db "Vetor ordenado em ordem decrescente: ", 0
+    format_in dq "%lu", 0       ; Format specifier for 64-bit integer input
+    format_out dq "%lu ", 0     ; Format specifier for 64-bit integer output
+
+section .bss
+    array resq 100              ; Reserva espaço para até 100 inteiros de 64 bits
+    n resq 1                    ; Guarda o tamanho do vetor em 64 bits
+
+section .text
+    extern printf, scanf
+    global main
+
+main:
+    ; Alinhar a pilha a 16 bytes
+    and rsp, -16
+    
+    ;push rbp
+    ;mov rbp, rsp
+
+    ; Solicitar o tamanho do vetor
+    mov rdi, prompt_n
+    call printf
+
+    ; Ler o tamanho do vetor
+    mov rdi, format_in
+    mov rsi, n
+    call scanf
+
+    ; Carregar n em rcx
+    mov rcx, [n]
+
+    ; Verificar se n está dentro dos limites
+    cmp rcx, 100
+    jle .valid_n
+    ; Se n for maior que 100, definir n como 100
+    mov rcx, 100
+.valid_n:
+
+    ; Loop para preencher o vetor
+    xor rbx, rbx               ; índice inicial 0
+input_loop:
+    ; Exibir prompt para número
+    mov rdi, prompt_num
+    call printf
+
+    ; Ler o número do usuário
+    ;lea rax, [array + rbx*8]
+    mov rdi, format_in
+    lea rsi, [array + rbx*8]
+    ;mov rsi, rax
+    call scanf
+
+    ; Incrementar o índice
+    inc rbx
+    cmp rbx, [n]               ; Comparar com o valor original de n
+    jl input_loop
+
+    ; Ordenar o vetor em ordem crescente usando Bubble Sort
+    mov rcx, [n]
+    dec rcx
+
+sort_asc:
+    xor rdi, rdi
+    mov rbx, rcx
+
+inner_loop_asc:
+    mov r8, [array + rdi*8]
+    mov r9, [array + rdi*8 + 8]
+    cmp r8, r9
+    jle no_swap_asc
+
+    ; Troca os valores se estiverem fora de ordem
+    mov [array + rdi*8], r9
+    mov [array + rdi*8 + 8], r8
+
+no_swap_asc:
+    inc rdi
+    dec rbx
+    jnz inner_loop_asc
+
+    dec rcx
+    jnz sort_asc
+
+    ; Mostrar o vetor ordenado em ordem crescente
+    mov rdi, msg_sorted_asc
+    call printf
+
+    ; Imprimir os números em ordem crescente
+    mov rcx, [n]
+    xor rbx, rbx
+
+print_asc:
+    ;lea r8, [array + rbx*8]
+    mov rdi, format_out
+    lea rsi, [array + rbx*8]
+    call printf
+
+    inc rbx
+    cmp rbx, rcx
+    jl print_asc
+
+    ; Ordenar o vetor em ordem decrescente usando Bubble Sort
+    mov rcx, [n]
+    dec rcx
+
+sort_desc:
+    xor rdi, rdi
+    mov rbx, rcx
+
+inner_loop_desc:
+    mov r8, [array + rdi*8]
+    mov r9, [array + rdi*8 + 8]
+    cmp r8, r9
+    jge no_swap_desc
+
+    ; Troca os valores se estiverem fora de ordem
+    mov [array + rdi*8], r9
+    mov [array + rdi*8 + 8], r8
+
+no_swap_desc:
+    inc rdi
+    dec rbx
+    jnz inner_loop_desc
+
+    dec rcx
+    jnz sort_desc
+
+    ; Mostrar o vetor ordenado em ordem decrescente
+    mov rdi, msg_sorted_desc
+    call printf
+
+    ; Imprimir os números em ordem decrescente
+    mov rcx, [n]
+    xor rbx, rbx
+
+print_desc:
+    ;lea r8, [array + rbx*8]
+    mov rdi, format_out
+    lea rsi, [array + rbx*8]
+    ;mov rsi, r8
+    call printf
+
+    inc rbx
+    cmp rbx, rcx
+    jl print_desc
+
+    ; Retornar 0 (finalizar programa)
+    mov rax, 60                ; Código de saída para syscall exit
+    xor rdi, rdi               ; Retorno 0
+    syscall
+
+section .note.GNU-stack
